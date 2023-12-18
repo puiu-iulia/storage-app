@@ -38,7 +38,17 @@ export const useDB = () => {
         
     }
 
+    const insertProduct = (product: Product) => {
+        const { name, price, description, image, quantity, category } = product;
+        const sql = `INSERT INTO products (name, price, description, image, quantity, category) VALUES (?, ?, ?, ?, ?, ?);`;
+
+        const args = [name, price, description, image, quantity, category];
+
+        return db.execAsync([{ sql, args }], false)
+    }
+
     return {
-        getProducts
+        getProducts,
+        insertProduct
     }
 }
