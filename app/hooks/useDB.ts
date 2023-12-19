@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 import { useEffect } from 'react';
+import { ResultSet } from 'expo-sqlite';
 
 export interface Product {
     id?: number;
@@ -34,8 +35,12 @@ export const useDB = () => {
         });
     }
 
+
     const getProducts = () => {
-        
+        const sql = `SELECT * FROM products;`;
+        const args = [];
+        return db.execAsync([{ sql, args }], false)
+            .then((result) => (result[0] as ResultSet).rows) as Promise<Product[]>;
     }
 
     const insertProduct = (product: Product) => {
@@ -45,10 +50,19 @@ export const useDB = () => {
         const args = [name, price, description, image, quantity, category];
 
         return db.execAsync([{ sql, args }], false)
+         
+    }
+
+    const getAllCategories = () => {
+        const sql = `SELECT DISTINCT category FROM products;`;
+        const args = [];
+        return db.execAsync([{ sql, args }], false)
+            .then((result) => (result[0] as ResultSet).rows) as Promise<Product[]>;
     }
 
     return {
         getProducts,
-        insertProduct
+        insertProduct,
+        getAllCategories
     }
 }
