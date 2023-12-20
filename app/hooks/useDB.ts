@@ -60,9 +60,44 @@ export const useDB = () => {
             .then((result) => (result[0] as ResultSet).rows) as Promise<Product[]>;
     }
 
+    const getProductsByCategory = (category: string) => {
+        const sql = `SELECT * FROM products WHERE category = ?;`;
+        const args = [category];
+        return db.execAsync([{ sql, args }], false)
+            .then((result) => (result[0] as ResultSet).rows) as Promise<Product[]>;
+    }
+
+    const getProductById = (id: number) => {
+        const sql = `SELECT * FROM products WHERE id = ?;`;
+        const args = [id];
+        return db.execAsync([{ sql, args }], false)
+            .then((result) => (result[0] as ResultSet).rows[0]) as Promise<Product>;
+    }
+
+    const updateProduct = (product: Product) => {
+        const { id, name, price, description, image, quantity, category } = product;
+        const sql = `UPDATE products SET name = ?, price = ?, description = ?, image = ?, quantity = ?, category = ? WHERE id = ?;`;
+
+        const args = [name, price, description, image, quantity, category, id];
+
+        return db.execAsync([{ sql, args }], false)
+         
+    }
+
+    const deleteProduct = (id: number) => {
+        const sql = `DELETE FROM products WHERE id = ?;`;
+        const args = [id];
+        return db.execAsync([{sql, args}], false)
+    }
+
+
     return {
         getProducts,
         insertProduct,
-        getAllCategories
+        getAllCategories,
+        getProductsByCategory,
+        getProductById,
+        updateProduct,
+        deleteProduct
     }
 }
